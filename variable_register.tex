@@ -2,6 +2,97 @@
 
 \begin{document}
 
-hello
+\section{Variables in Registers}
+
+%Integer registers
+\count0=42
+The value is now `\the\count0'.
+
+\def\macro{-123456}
+\count0=\macro
+The value is now `\the\count0'.
+
+% The expansion expands everything follows
+\def\firstmacro{123}
+\def\secondmacro{456}
+\def\thirdmacro{789}
+\count0=\firstmacro\secondmacro\thirdmacro
+The value is now `\the\count0'
+
+% Abortion and Absorption
+\count0=42
+39 will not appear in this `\the\count0',
+\def\macro{42}
+\count0=\macro
+39 unfortunately appears in `\the\count0'
+
+
+%\relax is to end scanning
+\count0=\macro\relax
+39 will again not appear in this `\the\count0'
+
+---------------------
+
+%fixed point number registers
+
+\dimen0=1pt
+The value is now \the\dimen0.
+
+\dimen0=0.0001pt
+The value is now \the\dimen0.
+
+\def\macro{1234.5678}
+\dimen0=\macro pt
+The value is now \the\dimen0.
+
+--------------------------
+
+% Token registers
+
+\toks0={abc}
+\toks1={DEF}
+The value is now \the\toks0\the\toks1
+
+\def\macro{xxoo}
+\toks0={\macro}
+This is \the\toks0
+
+% the following won't work
+%\toks0=\macro
+%This is \the\toks0
+
+\toks0={#1}
+\message{This is \the\toks0!!!!!!!!!!!}
+% You can not print this in the direct text, so called horizontal mode.
+
+\section{Allocating Registers}
+
+\newdimen\variable  % quite like 'declaration' in normal programming
+\variable=42cm
+
+The value is now \the\variable
+
+\newcount\tempa
+\tempa=32
+ This time you give tempa \the\tempa
+ 
+ \tempa=64
+ This time you give tempa \the\tempa
+ 
+ % Groups constitute Tex's concept of scope
+ 
+ \newtoks\temptoks
+ \temptoks={value outside of groups}
+This outside temptoks is \the\temptoks
+
+ \begingroup
+  \temptoks={value inside groups}
+This inside temptoks is \the\temptoks
+ \endgroup
+ 
+ % \uspackage{etex} to extand registers from 256 to 65536
+ 
+
+
 
 \end{document}
