@@ -81,6 +81,139 @@ So far, nothing has been typeset. But now: \macrofour
 \message{We have macrofour = \meaning\macrofour}
 % By far, nothing new under sun.
 
+% the \edef command expands, which is different from \def.
+
+\def\a{3}
+\def\b{2\a}
+\def\c{1\b}
+\edef\d{value=\c}
+\message{Macro `d' is defined to be \meaning\d}
+\expandafter\def\expandafter\d\expandafter{\c}
+\message{Macro`d' is defined to be `\meaning\d' using expandafter}
+% This reminds us that \expandafter only expands once.
+
+% any assignment operation cannot be expanded
+
+\edef\d{\count0=42}
+\message{Macro `d' is defined to be `\meaning\d'}
+\the\count0 % This shouldn't be astonishing, right?
+
+\the\count1
+\the\dimen0
+
+\def\a{1234}
+\edef\d{advance\count0 by \a}
+\message{Macro `d' is defined to be `\meaning\d'}
+
+\edef\d{Invoke \noexpand\a another macro}
+\message{Macro `d' is defined to be `\meaning\d'}
+
+------------------------------------------------
+
+% Token Registers
+
+\def\token{abcdefg}
+\def\a{123}
+\def\b{456}
+
+\toks0={A \token list \a \b \count0=42 will never be expanded}
+\edef\d{\the\toks0 }
+\message{Macro `d' is defined to be `\meaning\d'}% tokens never be expanded
+\the\toks0
+
+% About absortion, a specialized experiment
+
+\def\c{1234}
+\count0=\c % manually left whitespace does not work
+345 absorbed into \the\count0
+
+
+\toks0={abc}
+\toks1={\v}
+\edef\d{\the\toks0}
+\d1
+
+\toks0={abc}
+\toks1={DEF}
+The value is now \the\toks01
+
+% assemble several macros in one
+
+\def\piecea{\a{xyz}}
+\def\pieceb{\count0=42}
+\def\piecec{string \b}
+\toks0=\expandafter{\piecea}
+\toks1=\expandafter{\pieceb}
+\toks2=\expandafter{\piecec}
+\edef\d{I have \the\toks0 and \the\toks1 and \the\toks2}
+\message{Macro `d' is defined to be `\meaning\d'}
+
+%more macro definition commands
+
+%let
+
+\def\b{abc}
+\edef\c{def}
+\newtoks\d
+\d={ghk}
+\let\f=\b
+\f
+
+\let\f=\c
+\f
+
+\let\f=\d
+\the\f
+
+\let\f=a
+\f
+
+\let\f=abc
+\f
+
+%\gdef is a short cut for \global\def
+
+%\xdef is a short cut for \global\edef
+
+%\cs name
+
+\def\macro{Content}
+This here is normal usage: `\macro'.
+This here uses csname: `\csname macro\endcsname% There shouldn't be a space between name and \endcsname
+% cs means control sequence.
+
+\expandafter\def\csname a01macro with.strange.chars\endcsname{Content}
+I use a strange macro. Here it is: `\csname a01macro with.strange.chars\endcsname`
+
+%\csname\endcsname will expand all the tokens between them, like \edef
+
+% the fact that the tokens in between are expandable allows to use `indirect' macro names:
+
+\def\macro{onetwothree}
+\expandafter\def\csname macro\macro\endcsname{Content}
+I have just defined \expandafter\string\csname macro\macro\endcsname
+
+with replacement text `\csname macro\macro\endcsname'
+
+% Due to the flexibility showed above, \csname is used to implement all(?) of the key-value packages available in TeX.
+
+%\string
+
+\def\macro{Content}
+I have just defined `\string\macro' using `\string\def'
+
+%At first, I hope to see inside of \def as follows:
+%\expandafter\string\csname \def\endcsname
+% which means that \def is not a normal macro
+
+% tools used to debug
+
+\tracingmacros=2
+
+\tracingcommands=2
+
+\tracingrestores=1
+
 
 
 

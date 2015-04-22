@@ -1,0 +1,14 @@
+\documentclass{article}
+\begin{document}
+  
+  \toks0={abc}
+  \toks1={DEF}
+  \edef\d{\the\toks0}1
+  \message{\meaning\d}
+  \d
+
+  \toks0={abc}
+  \toks1={DEF}
+  \the\toks01
+  
+\end{document}
