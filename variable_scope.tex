@@ -1,0 +1,101 @@
+\documentclass{article}
+
+\begin{document}
+
+\def\i{42}
+{
+  \def\i{43}
+  \def\b{2}
+}
+The value of \textbackslash i is now \i.
+% The old program state will be restored completely after returning from the local group.
+
+% \begingroup \endgroup
+% \bgroup , ended by \egroup, can also be used to delimit arguments to \hbox or \vbox.
+% \bgroup is also useful to test whether the next following character is an open brace.
+
+%  Tex does not know how to write into macros of an outer scope.
+
+{
+  \global\def\a{123}
+  \global\advance\count0 by 3
+  \global\toks0={34}
+}
+\a \the\count0 \the\toks0
+% definition follows \global immediately will be done globally.
+
+\newcount\m
+\m = 123
+{
+  \globaldefs=1
+  \advance\m by 3
+}
+\the\m
+
+\m = 123
+{
+  \globaldefs=-1
+  \global\advance\m by 3 
+}
+\the\m
+
+\m = 123
+{
+  \globaldefs=0
+  \global\advance\m by 3
+  \advance\m by 3 
+}
+\the\m
+% globaldefs = 0 is the default.
+
+
+--------------------------------------------------
+
+% transporting  changes to outer group
+
+\def\initialvalue{0}
+Here \textbackslash initialvalue is \initialvalue
+{
+  % do sth.
+  \def\initialvalue{42}
+  \global\let\myglobaltemporary=\initialvalue
+}
+\let\initialvalue=\myglobaltemporary
+
+Here \textbackslash initialvalue is \initialvalue
+
+% smuggle
+
+\def\smuggle#1\endgroup{
+  \expandafter\endgroup\expandafter\def\expandafter#1\expandafter{#1}
+}
+
+\begingroup
+  \def\variable{12}
+  \edef\variable{\variable34}
+  \edef\variable{\variable57}
+  \message{Let us see what \meaning\variable stands for.}
+  \smuggle\variable
+\endgroup
+
+Now we get this lovely \variable
+
+% what is interesting in code above is that,
+
+% although following is valid: 
+
+\def\v{1}
+\edef\v{\v}
+Please show me \textbackslash v \v
+
+% but \def\v{\v} \v will lead to an infinite loops which causes stackoverflow
+
+
+% \aftergoup
+
+
+\end{document}
+
+
+
+
